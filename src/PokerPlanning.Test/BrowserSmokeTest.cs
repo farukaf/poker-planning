@@ -19,10 +19,12 @@ public class BrowserSmokeTest
     [BrowserFact]
     public void TwoPlayersVoteRevealAndStartAnotherRound()
     {
-        using var first = CreateDriver();
-        using var second = CreateDriver();
+        IWebDriver? first = null;
+        IWebDriver? second = null;
         try
         {
+            first = CreateDriver();
+            second = CreateDriver();
             first.Navigate().GoToUrl(Environment.GetEnvironmentVariable("POKER_BASE_URL")!);
             SetName(first, "Alice Smoke");
             Click(first, "//button[normalize-space()='Create Room']");
@@ -50,9 +52,14 @@ public class BrowserSmokeTest
         {
             var output = Environment.GetEnvironmentVariable("POKER_BROWSER_ARTIFACTS") ?? "TestResults/browser";
             Directory.CreateDirectory(output);
-            SaveFailure(first, output, "first");
-            SaveFailure(second, output, "second");
+            if (first is not null) SaveFailure(first, output, "first");
+            if (second is not null) SaveFailure(second, output, "second");
             throw;
+        }
+        finally
+        {
+            try { second?.Dispose(); }
+            finally { first?.Dispose(); }
         }
     }
 

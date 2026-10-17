@@ -56,7 +56,7 @@ Without `SELENIUM_REMOTE_URL`, Selenium Manager resolves a local Chrome driver a
 
 Dependabot API returned an empty alert array. Code scanning returned 404 `no analysis found`; secret scanning returned 404 `Secret scanning is disabled on this repository.` These two results are unavailable coverage, not clean scans. No existing Sonar configuration or token was available, so no Sonar Cloud quality gate has run or passed. Compiler analyzers are the locally executed static analysis.
 
-For the free public-repository Sonar Cloud plan, create/import the public project, disable **Automatic Analysis**, set repository variables `SONAR_ORGANIZATION`, `SONAR_PROJECT_KEY`, `SONAR_ENABLED=true`, and add secret `SONAR_TOKEN`. `.github/workflows/sonar.yml` installs pinned SonarScanner for .NET 12.0.0 and dotnet-coverage 18.12.0, imports VS coverage XML and waits for the quality gate. Missing configuration fails when enabled. Internal PRs and main are supported; fork PRs receive no secret-based scan. While disabled the workflow explicitly reports that no gate was evaluated.
+For the free public-repository Sonar Cloud plan, create/import the public project, disable **Automatic Analysis**, set repository variables `SONAR_ORGANIZATION`, `SONAR_PROJECT_KEY`, `SONAR_ENABLED=true`, and add secret `SONAR_TOKEN`. `.github/workflows/sonar.yml` installs pinned SonarScanner for .NET 12.0.0 and dotnet-coverage 18.12.0, imports VS coverage XML from unit and host integration tests and waits for the quality gate. It explicitly excludes `BrowserSmokeTest`: Selenium E2E runs against the real app in the separate build workflow and is not part of Sonar coverage. Missing configuration fails when enabled. Internal PRs and main are supported; fork PRs receive no secret-based scan. While disabled the workflow explicitly reports that no gate was evaluated.
 
 ## Sources checked
 
@@ -70,4 +70,4 @@ For the free public-repository Sonar Cloud plan, create/import the public projec
 - https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/ci-based-analysis/sonarscanner-for-dotnet/
 - https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/ci-based-analysis/github-actions-for-sonarcloud/
 
-No PR, merge, Docker Hub push or deployment was performed during this phase. Independent validation is pending.
+No PR, merge, Docker Hub push or deployment was performed during this phase. Independent clean-room validation of commit `7cd571f` passed locked restore, Release build, compiler analyzers, dependency-audit script checks and all 10 tests including the real two-browser Selenium flow.

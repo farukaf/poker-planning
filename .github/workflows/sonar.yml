@@ -35,5 +35,5 @@ jobs:
           .sonar-tools/dotnet-sonarscanner begin /k:"$SONAR_PROJECT_KEY" /o:"$SONAR_ORGANIZATION" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" /d:sonar.qualitygate.wait=true
           dotnet restore src/PokerPlanning.sln --locked-mode
           dotnet build src/PokerPlanning.sln -c Release --no-incremental --no-restore
-          .sonar-tools/dotnet-coverage collect 'dotnet test src/PokerPlanning.sln -c Release --no-build' -f xml -o coverage.xml
+          .sonar-tools/dotnet-coverage collect 'dotnet test src/PokerPlanning.sln -c Release --no-build --filter FullyQualifiedName!~BrowserSmokeTest' -f xml -o coverage.xml
           .sonar-tools/dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"
