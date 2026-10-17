@@ -1,0 +1,8 @@
+  PokerPlanning -> /home/agent/work/personal-apps-modernization/farukaf-poker-planning/src/PokerPlanning/bin/Release/net10.0/PokerPlanning.dll
+  PokerPlanning.Test -> /home/agent/work/personal-apps-modernization/farukaf-poker-planning/src/PokerPlanning.Test/bin/Release/net10.0/PokerPlanning.Test.dll
+
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:21.30

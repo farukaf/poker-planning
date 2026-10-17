@@ -1,32 +1,57 @@
-name: CI/CD for ASP.NET Project
- 
-on: 
+name: Build, test and publish
+on:
+  pull_request:
   push:
-    tags:
-      - v*
-
+    branches: [main]
+    tags: ['v*']
+permissions:
+  contents: read
 jobs:
-  build-and-deploy:
+  build-and-publish:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2.4.2
-
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v2.1.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          dotnet-version: 7.x
-
-      - name: Get version from tag
-        id: version
-        run: echo "VERSION=$(echo $GITHUB_REF | cut -d '/' -f 3)" >> $GITHUB_ENV
-
-      - name: Build and publish Docker image
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+      - run: dotnet restore src/PokerPlanning.sln --locked-mode
+      - run: dotnet build src/PokerPlanning.sln -c Release --no-restore -warnaserror
+      - name: Start application
         run: |
-          docker build -t farukaf/poker-planning:$VERSION .
-          docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
-          docker push farukaf/poker-planning:$VERSION 
+          mkdir -p TestResults
+          cd src/PokerPlanning
+          ASPNETCORE_URLS=http://127.0.0.1:5300 ASPNETCORE_ENVIRONMENT=Development dotnet bin/Release/net10.0/PokerPlanning.dll > ../../TestResults/application.log 2>&1 &
+          echo $! > ../../TestResults/application.pid
+          for attempt in {1..30}; do curl --fail --silent http://127.0.0.1:5300/ > /dev/null && exit 0; sleep 1; done
+          exit 1
+      - run: dotnet test src/PokerPlanning.sln -c Release --no-build --logger trx --results-directory TestResults
         env:
-          DOCKER_BUILDKIT: 1 
+          POKER_BASE_URL: http://127.0.0.1:5300
+          POKER_BROWSER_ARTIFACTS: ${{ github.workspace }}/TestResults/browser
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: poker-test-results
+          path: TestResults/
 
+      - name: Stop application
+        if: always()
+        run: test ! -f TestResults/application.pid || kill "$(cat TestResults/application.pid)"
+      - name: Audit dependencies
+        run: |
+          dotnet list src/PokerPlanning.sln package --vulnerable --include-transitive --format json > nuget-audit.json
+          python3 scripts/check-nuget-audit.py nuget-audit.json
+      - run: docker build -t farukaf/poker-planning:ci .
+      - name: Publish tagged image
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          VERSION: ${{ github.ref_name }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          printf '%s' "$DOCKERHUB_TOKEN" | docker login --username "$DOCKERHUB_USERNAME" --password-stdin
+          docker tag farukaf/poker-planning:ci "farukaf/poker-planning:$VERSION"
+          docker push "farukaf/poker-planning:$VERSION"
+          docker logout

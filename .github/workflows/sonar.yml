@@ -1,0 +1,39 @@
+name: Sonar Cloud
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  sonar:
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    steps:
+      - name: Report inactive analysis
+        if: vars.SONAR_ENABLED != 'true'
+        run: echo 'Sonar Cloud is disabled. Configure SONAR_ENABLED, SONAR_ORGANIZATION, SONAR_PROJECT_KEY and SONAR_TOKEN; no quality gate was evaluated.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: vars.SONAR_ENABLED == 'true'
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        if: vars.SONAR_ENABLED == 'true'
+        with:
+          global-json-file: global.json
+      - name: Analyze and wait for quality gate
+        if: vars.SONAR_ENABLED == 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+        run: |
+          test -n "$SONAR_TOKEN" && test -n "$SONAR_ORGANIZATION" && test -n "$SONAR_PROJECT_KEY" || { echo 'Missing Sonar Cloud configuration'; exit 1; }
+          dotnet tool install dotnet-sonarscanner --version 12.0.0 --tool-path .sonar-tools
+          dotnet tool install dotnet-coverage --version 18.12.0 --tool-path .sonar-tools
+          .sonar-tools/dotnet-sonarscanner begin /k:"$SONAR_PROJECT_KEY" /o:"$SONAR_ORGANIZATION" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.token="$SONAR_TOKEN" /d:sonar.cs.vscoveragexml.reportsPaths="coverage.xml" /d:sonar.qualitygate.wait=true
+          dotnet restore src/PokerPlanning.sln --locked-mode
+          dotnet build src/PokerPlanning.sln -c Release --no-incremental --no-restore
+          .sonar-tools/dotnet-coverage collect 'dotnet test src/PokerPlanning.sln -c Release --no-build' -f xml -o coverage.xml
+          .sonar-tools/dotnet-sonarscanner end /d:sonar.token="$SONAR_TOKEN"

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "parameters": "--vulnerable --include-transitive",
+  "sources": [
+    "https://api.nuget.org/v3/index.json"
+  ],
+  "projects": [
+    {
+      "path": "/home/agent/work/personal-apps-modernization/farukaf-poker-planning/src/PokerPlanning/PokerPlanning.csproj"
+    },
+    {
+      "path": "/home/agent/work/personal-apps-modernization/farukaf-poker-planning/src/PokerPlanning.Test/PokerPlanning.Test.csproj"
+    }
+  ]
+}

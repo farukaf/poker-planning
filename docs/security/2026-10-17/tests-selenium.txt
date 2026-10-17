@@ -1,0 +1,5 @@
+Test run for /home/agent/work/personal-apps-modernization/farukaf-poker-planning/src/PokerPlanning.Test/bin/Release/net10.0/PokerPlanning.Test.dll (.NETCoreApp,Version=v10.0)
+A total of 1 test files matched the specified pattern.
+Results File: /home/agent/work/personal-apps-modernization/farukaf-poker-planning/TestResults/_vpsbr-16142486_2026-10-17_18_27_46_net10.0.trx
+
+Passed!  - Failed:     0, Passed:    10, Skipped:     0, Total:    10, Duration: 9 s - PokerPlanning.Test.dll (net10.0)

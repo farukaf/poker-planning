@@ -1,0 +1,52 @@
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  50.72MB
+Step 1/14 : FROM mcr.microsoft.com/dotnet/sdk:10.0.402-alpine3.24@sha256:230c3fbae0ceedc70bca04eed2bfb5694e8b248cadbb81010f41b7a993601f55 AS build
+ ---> 230c3fbae0ce
+Step 2/14 : WORKDIR /src
+ ---> Using cache
+ ---> f7331194c932
+Step 3/14 : COPY ["Directory.Build.props", "Directory.Build.props"]
+ ---> 3d651f3a7c05
+Step 4/14 : COPY ["PokerPlanning/", "PokerPlanning/"]
+ ---> 5b98fda02f2f
+Step 5/14 : RUN dotnet restore "PokerPlanning/PokerPlanning.csproj" --locked-mode
+ ---> Running in b5cd04ce12bb
+  Determining projects to restore...
+  Restored /src/PokerPlanning/PokerPlanning.csproj (in 4.38 sec).
+ ---> Removed intermediate container b5cd04ce12bb
+ ---> e129775198c8
+Step 6/14 : COPY . .
+ ---> 958475fd1f45
+Step 7/14 : RUN dotnet publish "PokerPlanning/PokerPlanning.csproj" -c Release -o /app/publish /p:UseAppHost=false
+ ---> Running in b66500ce176c
+  Determining projects to restore...
+  Restored /src/PokerPlanning/PokerPlanning.csproj (in 402 ms).
+  PokerPlanning -> /src/PokerPlanning/bin/Release/net10.0/PokerPlanning.dll
+  PokerPlanning -> /app/publish/
+ ---> Removed intermediate container b66500ce176c
+ ---> ddc6117f40e1
+Step 8/14 : FROM mcr.microsoft.com/dotnet/aspnet:10.0.13-alpine3.24@sha256:819bd3649d8bf53f35527c68d62e17b348ef6f24ae73073f497f00a878348062 AS final
+ ---> 819bd3649d8b
+Step 9/14 : WORKDIR /app
+ ---> Using cache
+ ---> 92ae1aa6cb9a
+Step 10/14 : EXPOSE 8080
+ ---> Using cache
+ ---> 3a3a11788f26
+Step 11/14 : HEALTHCHECK --interval=30s --timeout=3s --start-period=10s   CMD wget -q -O /dev/null http://127.0.0.1:8080/ || exit 1
+ ---> Using cache
+ ---> f73e662fd3ff
+Step 12/14 : USER $APP_UID
+ ---> Using cache
+ ---> 298aeebd6cd7
+Step 13/14 : COPY --from=build /app/publish .
+ ---> 848efaf3d24f
+Step 14/14 : ENTRYPOINT ["dotnet", "PokerPlanning.dll"]
+ ---> Running in 8824576eaad7
+ ---> Removed intermediate container 8824576eaad7
+ ---> 5ffe5c591831
+Successfully built 5ffe5c591831
+Successfully tagged poker-planning:net10-src-context
