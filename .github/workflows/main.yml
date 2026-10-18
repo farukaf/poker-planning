@@ -42,7 +42,7 @@ jobs:
       - name: Audit dependencies
         run: |
           dotnet list src/PokerPlanning.sln package --vulnerable --include-transitive --format json > nuget-audit.json
-          python3 scripts/check-nuget-audit.py nuget-audit.json
+          python3 -c 'import json; d=json.load(open("nuget-audit.json")); assert not any(f.get("topLevelPackages") or f.get("transitivePackages") for p in d["projects"] for f in p.get("frameworks", []))'
       - run: docker build -t farukaf/poker-planning:ci .
       - name: Publish tagged image
         if: startsWith(github.ref, 'refs/tags/v')
