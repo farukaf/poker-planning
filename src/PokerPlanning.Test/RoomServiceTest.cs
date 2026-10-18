@@ -8,7 +8,7 @@ public class RoomServiceTest
     public void Create_ShouldAddRoom()
     {
         // Arrange
-        var service = new RoomService();
+        var service = new RoomService(Microsoft.Extensions.Logging.Abstractions.NullLogger<RoomService>.Instance);
         var cardValues = new string[] { "1", "2", "3" };
 
         // Act
@@ -24,7 +24,7 @@ public class RoomServiceTest
     public void GetRoom_ShouldReturnNull_WhenRoomDoesNotExist()
     {
         // Arrange
-        var service = new RoomService();
+        var service = new RoomService(Microsoft.Extensions.Logging.Abstractions.NullLogger<RoomService>.Instance);
 
         // Act
         var room = service.GetRoom(Guid.NewGuid());
@@ -37,7 +37,7 @@ public class RoomServiceTest
     public async Task CleanRooms_ShouldRemoveOldRooms()
     {
         // Arrange
-        var service = new RoomService();
+        var service = new RoomService(Microsoft.Extensions.Logging.Abstractions.NullLogger<RoomService>.Instance);
         var oldRoomId = service.Create(new string[] { "1", "2", "3" });
         service.Rooms[oldRoomId].UpdateAt = DateTime.UtcNow.AddHours(-1);
         var newRoomId = service.Create(new string[] { "4", "5", "6" });

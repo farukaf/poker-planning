@@ -14,7 +14,7 @@ namespace PokerPlanning.Services
 
         public async Task<string> GetUserName()
         {
-            return await _localStorage.GetItemAsync<string>(USER_NAME_KEY);
+            return await _localStorage.GetItemAsync<string>(USER_NAME_KEY) ?? string.Empty;
         }
 
         public async Task SetUserName(string userName)
