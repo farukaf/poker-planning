@@ -1,3 +1,0 @@
-Command: dotnet format analyzers src/PokerPlanning.sln --verify-no-changes --no-restore --severity warn
-Exit status: 0
-No diagnostics or changes.
