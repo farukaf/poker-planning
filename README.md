@@ -1,25 +1,19 @@
-# Farukaf Poker Planning
+# Poker Planning
 
-Inspired by [PokerPlanning.org](https://pokerplanning.org/) project.
+A lightweight online planning-poker app for teams. Create a room, share its link, and use cards to estimate work together. Inspired by [PokerPlanning.org](https://pokerplanning.org/).
 
-## Build with [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
+Built with [Blazor](https://dotnet.microsoft.com/apps/aspnet/web-apps/blazor) on ASP.NET Core. The container runs without a separate database service.
 
-No aditional dependencies are necessary.
+## Run with Docker
 
-## Public docker images
+```sh
+docker run --rm -p 8080:8080 farukaf/poker-planning:latest
+```
 
-[Docker Hub](https://hub.docker.com/r/farukaf/poker-planning/tags)
+Open [http://localhost:8080](http://localhost:8080) and create a room to share with your team. Browse the published [Docker Hub image and tags](https://hub.docker.com/r/farukaf/poker-planning).
 
-## To-Do List
+## Source and support
 
-- [x] CI/CD uploading to Docker Hub Repository.
-- [ ] Create a "how to" from the public docker.
-- [x] Build *Janitor* to clean and close abandoned rooms.
-- [ ] Log things that are happening
-- [ ] Tests?
-  - [ ] Unitary
-  - [ ] Stress Test (discover our limits)
-- [ ] Support horizontal scalling with backlane (if so, must be optional)?
-- [ ] Custom styling
-- [ ] Internationalization/Localization 
+- [Source code and issues](https://github.com/farukaf/farukaf-poker-planning)
+- [Docker Hub image and tags](https://hub.docker.com/r/farukaf/poker-planning/tags)
    
