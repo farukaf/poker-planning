@@ -1,4 +1,4 @@
-# Farukaf Poker Planning
+# Poker Planning
 
 **Didn't read? Use it now:** [poker.farukaf.com](https://poker.farukaf.com)
 
