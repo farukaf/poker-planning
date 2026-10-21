@@ -1,25 +1,29 @@
 # Farukaf Poker Planning
 
-Inspired by [PokerPlanning.org](https://pokerplanning.org/) project.
+Run a planning-poker session with your team in the browser. Create a room, share its link, and estimate a story together without installing a client or asking everyone to create an account.
 
-## Build with [Blazor](https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor)
+![Poker Planning home page with the Create Room action](assets/home.png)
 
-No aditional dependencies are necessary.
+## How a round works
 
-## Public docker images
+1. Enter a display name and create a room.
+2. Share the room link with the people estimating the work.
+3. Each participant privately selects a card from the room's estimation scale.
+4. Reveal the cards together, compare the estimates, and start another round.
 
-[Docker Hub](https://hub.docker.com/r/farukaf/poker-planning/tags)
+The default cards use a Fibonacci-style scale with `?` for an estimate that needs discussion. A room can use a customized set of card values.
 
-## To-Do List
+## Run with Docker
 
-- [x] CI/CD uploading to Docker Hub Repository.
-- [ ] Create a "how to" from the public docker.
-- [x] Build *Janitor* to clean and close abandoned rooms.
-- [ ] Log things that are happening
-- [ ] Tests?
-  - [ ] Unitary
-  - [ ] Stress Test (discover our limits)
-- [ ] Support horizontal scalling with backlane (if so, must be optional)?
-- [ ] Custom styling
-- [ ] Internationalization/Localization 
-   
+```sh
+docker run --rm -p 8080:8080 farukaf/poker-planning:latest
+```
+
+Open [http://localhost:8080](http://localhost:8080), enter a name, create a room, and send its URL to your team.
+
+## Project
+
+Poker Planning is built with Blazor Server on ASP.NET Core. It has no external database: room and round state live in the running process, and inactive rooms are periodically cleaned up. Restarting the container clears its active rooms.
+
+- [Source code and issues](https://github.com/farukaf/farukaf-poker-planning)
+- [Docker Hub image and tags](https://hub.docker.com/r/farukaf/poker-planning)
