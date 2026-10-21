@@ -1,8 +1,10 @@
 # Farukaf Poker Planning
 
+**Didn't read? Use it now:** [poker.farukaf.com](https://poker.farukaf.com)
+
 Run a planning-poker session with your team in the browser. Create a room, share its link, and estimate a story together without installing a client or asking everyone to create an account.
 
-![Poker Planning home page with the Create Room action](assets/home.png)
+![Poker Planning room with Alice, Bob, and Charlie voting](assets/room-three-players.png)
 
 ## How a round works
 
