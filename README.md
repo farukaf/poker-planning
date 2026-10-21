@@ -4,7 +4,7 @@
 
 Run a planning-poker session with your team in the browser. Create a room, share its link, and estimate a story together without installing a client or asking everyone to create an account.
 
-![Poker Planning room with Alice, Bob, and Charlie voting](assets/room-three-players.png)
+![Poker Planning room with Alice, Peter, and Ann voting](assets/poker-room.jpg)
 
 ## How a round works
 
